@@ -19,15 +19,15 @@ function check_parameter() {
   fi
 }
 
-function check_df() {
-  echo ==== check if remote update ====
+function is_remote_update() {
   git fetch origin
   master=$(git rev-parse $branch)
   remote=$(git rev-parse origin/$branch)
 
   if [ $master == $remote ]; then
-    echo "[$(date)] Nothing change !"
-    exit 0
+    echo "false"
+  else
+    echo "true" 
   fi 
 }
 
@@ -45,10 +45,12 @@ function git_pull(){
   git pull origin $branch
 }
 
-function run_server(){
+function build(){
   echo ==== gradle build ====
   ./gradlew clean build
+}
 
+function run_server(){
   echo ==== run server ====
   name=$(find ./ -name "*jar")
   nohup java -jar -Dspring.profiles.active=$profile $name 1> server-log 2>&1 &
@@ -60,13 +62,14 @@ function kill_running_server(){
   kill -15 $pid
 }
 
-check_parameter $#
-
 echo -e "${txtylw}=======================================${txtrst}"
 echo -e "${txtgrn}  << 스크립트 >>${txtrst}"
+echo -e "${txtylw}=======================================${txtrst}"
+
+check_parameter $#
+
 echo -e "${txtgrn}  << 브랜치 $branch >>${txtrst}"
 echo -e "${txtgrn}  << Profile $profile >>${txtrst}"
-echo -e "${txtylw}=======================================${txtrst}"
 
 echo "=== go to script path === "
 cd /home/ubuntu/nextstep/infra-subway-deploy
@@ -77,16 +80,20 @@ if [ "$(is_server_running)" = "false" ]; then
   echo "==== there is no running server ===="
 
   git_pull 
+  build
   run_server
   exit 0
 fi
 
 echo "==== there is running server ===="
 
-check_df
-
-kill_running_server
-
-git_pull
-
-run_server
+echo "==== check if remote update ===="
+if [ "$(is_remote_update)" = "true" ]; then
+  echo "there is change !"
+  git_pull 
+  build
+  kill_running_server
+  run_server
+else
+  echo "[$(date)] Nothing change !"
+fi
