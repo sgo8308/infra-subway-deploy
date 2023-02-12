@@ -9,12 +9,12 @@ txtgrn='\033[1;32m' # Green
 execution_path=$(pwd)
 shell_script_path=$(dirname $0)
 branch=$1
-profile=$2
+profile='prod'
 
 function check_parameter() {
   echo ==== check parameter ====
-  if [ $1 -ne 2 ]; then
-    echo "Invalid Arguments: you need to put two parameter 1.branch name 2.profile" 
+  if [ $1 -ne 1 ]; then
+    echo "Invalid Arguments: you need to put one parameter 1.branch name" 
     exit 2
   fi
 }
