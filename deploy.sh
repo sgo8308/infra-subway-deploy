@@ -72,7 +72,7 @@ echo -e "${txtgrn}  << 브랜치 $branch >>${txtrst}"
 echo -e "${txtgrn}  << Profile $profile >>${txtrst}"
 
 echo "=== go to script path === "
-cd /home/ubuntu/nextstep/infra-subway-deploy
+cd /home/ubuntu/infra-subway-deploy
 
 echo "==== run server if not running ===="
 
