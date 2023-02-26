@@ -1,0 +1,1 @@
+# */10 * * * * /home/ubuntu/nextstep/infra-subway-deploy/deploy.sh sgo8308 >> /home/ubuntu/nextstep/infra-subway-deploy/deploy.sh.log 2>&1
